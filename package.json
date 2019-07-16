@@ -25,6 +25,7 @@
     "@babel/preset-react": "7.0.0",
     "@babel/preset-typescript": "7.3.3",
     "@babel/register": "7.4.4",
+    "@types/graphql": "^14.2.2",
     "@types/jscodeshift": "^0.6.1",
     "babel-jest": "^24.1.0",
     "esm": "^3.2.25",
@@ -33,6 +34,6 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "start": "node babelx.js ./src/graphql2ts"
+    "start": "node babelx.js ./src/index.ts"
   }
 }

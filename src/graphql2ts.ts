@@ -1,54 +1,68 @@
-import { parse, DocumentNode } from 'graphql';
-import fs from 'fs';
-import path from 'path';
+import {
+  parse,
+  DocumentNode,
+  ObjectTypeDefinitionNode,
+  InputObjectTypeDefinitionNode,
+  EnumTypeDefinitionNode, UnionTypeDefinitionNode, InterfaceTypeDefinitionNode
+} from 'graphql';
 import {parse as babelParser } from '@babel/parser';
 import generate from '@babel/generator';
 
-const cwd = process.cwd();
+export const objectTypeDefinition = (definition: ObjectTypeDefinitionNode) => {
+  const { name, description, fields } = definition;
 
-(async () => {
-  // if (process.argv.length !== 4) {
-  //   console.log(`usage: ${process.argv[0]} ${process.argv[1]} schema.graphql`);
-  //   return;
-  // }
+  console.log('definition ', definition);
 
-  const filename = path.join(cwd, process.argv[3] || 'schema.graphql');
+  const descriptionCode = description ? `description: '${description.value}',` : '';
 
-  const schema = fs.readFileSync(filename, { encoding: 'utf8' });
+  const code = `
+    const ${name.value} = new GraphQLObjectType({
+      name: '${name.value}',
+      ${descriptionCode}
+    });
+  `;
+  const ast = babelParser(code);
 
-  const document: DocumentNode = parse(schema);
+  const output = generate(ast);
 
-  for (const definition of document.definitions) {
-    switch (definition.kind) {
-      case 'ObjectTypeDefinition':
-        const { name, description, fields } = definition;
+  return output.code;
+};
 
-        // TODO - handle fields
+export const inputObjectTypeDefinition = (definition: InputObjectTypeDefinitionNode) => {
+  return '';
+};
 
-        const code = `
-          const ${name.value} = new GraphQLObjectType({
-            name: '${name.value}',
-            description: '${description.value}',
-          });
-        `;
-        const ast = babelParser(code);
-        const output = generate(ast);
+export const enumTypeDefinition = (definition: EnumTypeDefinitionNode) => {
+  return '';
+};
 
-        console.log(name.value);
-        console.log(output);
+export const unionTypeDefinition = (definition: UnionTypeDefinitionNode) => {
+  return '';
+};
 
-        return ;
-      case 'InputObjectTypeDefinition':
-        return ;
-      case 'EnumTypeDefinition':
-        return ;
-      case 'UnionTypeDefinition':
-        return ;
-      case 'InterfaceTypeDefinition':
-        return;
+export const interfaceTypeDefinition = (definition: InterfaceTypeDefinitionNode) => {
+  return '';
+};
+
+const DEFINITION_TO_TS = {
+  ObjectTypeDefinition: objectTypeDefinition,
+  InputObjectTypeDefinition: inputObjectTypeDefinition,
+  EnumTypeDefinition: enumTypeDefinition,
+  UnionTypeDefinition: unionTypeDefinition,
+  InterfaceTypeDefinition: interfaceTypeDefinition,
+};
+
+export const graphql2ts = (source: string) => {
+  const document: DocumentNode = parse(source);
+
+  const definitionsTs = document.definitions.map(definition => {
+    if (definition.kind in DEFINITION_TO_TS) {
+      return DEFINITION_TO_TS[definition.kind](definition);
     }
-  }
 
-  // TODO - transform document
-  // console.log('document: ', document);
-})();
+    console.log('not implemented for: ', definition.kind);
+    return ''
+  });
+
+  return definitionsTs.join('\n');
+};
