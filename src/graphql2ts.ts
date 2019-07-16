@@ -3,22 +3,81 @@ import {
   DocumentNode,
   ObjectTypeDefinitionNode,
   InputObjectTypeDefinitionNode,
-  EnumTypeDefinitionNode, UnionTypeDefinitionNode, InterfaceTypeDefinitionNode
+  EnumTypeDefinitionNode,
+  UnionTypeDefinitionNode,
+  InterfaceTypeDefinitionNode,
+  FieldDefinitionNode,
+  TypeNode,
+  StringValueNode, InputValueDefinitionNode
 } from 'graphql';
 import {parse as babelParser } from '@babel/parser';
 import generate from '@babel/generator';
 
+export const typedNode = (type: TypeNode) => {
+  switch (type.kind) {
+    case 'NamedType':
+      return type.name.value;
+    case 'ListType':
+      return `GraphQLList(${typedNode(type.type)})`;
+    case 'NonNullType':
+      return `GraphQLNonNull(${typedNode(type.type)})`;
+    default:
+      return '';
+  }
+};
+
+export const descriptionDefinition = (description?: StringValueNode) => {
+  return description ? `description: '${description.value}',` : '';
+};
+
+export const inputValueDefinitionNode = (input: InputValueDefinitionNode) => {
+  const { name, description, type } = input;
+
+  const code = `
+    ${name.value}: {
+      type: ${typedNode(type)},
+      ${descriptionDefinition(description)}
+    },
+  `;
+
+  return code;
+};
+
+export const fieldDefinition = (field: FieldDefinitionNode) => {
+  const { name, description, type } = field;
+
+  const argCode = field.arguments.map(arg => inputValueDefinitionNode(arg));
+
+  const args = argCode.length > 0
+    ? `
+      args: {
+        ${argCode.join('\n')}
+      }
+    ` : '';
+
+  const code = `
+    ${name.value}: {
+      type: ${typedNode(type)},
+      ${descriptionDefinition(description)}
+      ${args}
+    },
+  `;
+
+  return code;
+};
+
 export const objectTypeDefinition = (definition: ObjectTypeDefinitionNode) => {
   const { name, description, fields } = definition;
 
-  console.log('definition ', definition);
-
-  const descriptionCode = description ? `description: '${description.value}',` : '';
+  const fieldsCode = fields.map(field => fieldDefinition(field)).join('\n');
 
   const code = `
     const ${name.value} = new GraphQLObjectType({
       name: '${name.value}',
-      ${descriptionCode}
+      ${descriptionDefinition(description)}
+      fields: () => ({
+        ${fieldsCode}
+      })
     });
   `;
   const ast = babelParser(code);
@@ -55,7 +114,7 @@ const DEFINITION_TO_TS = {
 export const graphql2ts = (source: string) => {
   const document: DocumentNode = parse(source);
 
-  const definitionsTs = document.definitions.map(definition => {
+  const definitionsTs = document.definitions.slice(0,5).map(definition => {
     if (definition.kind in DEFINITION_TO_TS) {
       return DEFINITION_TO_TS[definition.kind](definition);
     }
