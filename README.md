@@ -1,5 +1,7 @@
 # graphql2ts
 
+# ![graphql2ts Logo](/img/logo.png)
+
 Transform .graphql files to graphql-js typescript code
 
 ## History
