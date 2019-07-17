@@ -1,0 +1,20 @@
+type Query {
+  checkinSearchQuery(query: CheckinSearchInput): CheckinSearchResult
+  defaultSettings: Settings,
+  route(waypoints: [WayPoint!]!): Route
+  items(filter: ItemFilterInput): ItemFilterResult
+  maybeNode: MaybeNode
+  neverNode: NeverNode
+  named: Named
+  me: User
+  node(id: ID): Node
+  node_id_required(id: ID!): Node
+  nodes(ids: [ID!]): [Node]
+  settings(environment: Environment): Settings
+  story: Story
+  task(number: Int): Task
+  username(name: String!): Actor
+  usernames(names: [String!]!): [Actor]
+  viewer: Viewer
+  _mutation: Mutation
+}

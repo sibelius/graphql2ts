@@ -12,6 +12,7 @@ import {
 } from 'graphql';
 import {parse as babelParser } from '@babel/parser';
 import generate from '@babel/generator';
+import prettier from "prettier";
 
 export const typedNode = (type: TypeNode) => {
   switch (type.kind) {
@@ -123,5 +124,5 @@ export const graphql2ts = (source: string) => {
     return ''
   });
 
-  return definitionsTs.join('\n');
+  return prettier.format(definitionsTs.join('\n'));
 };

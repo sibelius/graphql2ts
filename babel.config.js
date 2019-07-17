@@ -1,9 +1,5 @@
-const { workspaces = [] } = require('./package.json');
-
 module.exports = {
-  babelrcRoots: ['.', ...(workspaces.packages || workspaces)],
   presets: [
-    '@babel/preset-flow',
     [
       '@babel/preset-env',
       {
@@ -12,7 +8,6 @@ module.exports = {
         },
       },
     ],
-    '@babel/preset-react',
     '@babel/preset-typescript',
   ],
   plugins: [
@@ -24,10 +19,5 @@ module.exports = {
     '@babel/plugin-proposal-async-generator-functions',
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-proposal-optional-chaining',
-  ],
-  env: {
-    test: {
-      plugins: ['require-context-hook'],
-    },
-  },
+  ]
 };

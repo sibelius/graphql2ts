@@ -11,6 +11,7 @@
     "@babel/parser": "^7.5.0",
     "ast-types": "^0.12.2",
     "graphql": "^14.4.2",
+    "prettier": "^1.18.2",
     "yargs": "^13.3.0"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/graphql": "^14.2.2",
     "@types/jscodeshift": "^0.6.1",
     "babel-jest": "^24.1.0",
+    "babel-plugin-jest-hoist": "^24.6.0",
     "esm": "^3.2.25",
     "jest": "^24.1.0",
     "jscodeshift": "^0.6.4",
