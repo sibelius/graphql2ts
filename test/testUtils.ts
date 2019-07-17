@@ -50,9 +50,9 @@ function runTest(dirName, transformName, options, testFilePrefix) {
   }
 
   const fixtureDir = path.join(dirName, '..', '__testfixtures__');
-  const inputPath = path.join(fixtureDir, testFilePrefix + '.input.tsx');
+  const inputPath = path.join(fixtureDir, testFilePrefix + '.graphql');
   const source = fs.readFileSync(inputPath, 'utf8');
-  const expectedOutput = fs.readFileSync(path.join(fixtureDir, testFilePrefix + '.output.tsx'), 'utf8');
+  const expectedOutput = fs.readFileSync(path.join(fixtureDir, testFilePrefix + '.ts'), 'utf8');
   // Assumes transform is one level up from __tests__ directory
   const module = require(path.join(dirName, '..', transformName));
   runInlineTest(
