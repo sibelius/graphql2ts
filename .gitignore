@@ -43,3 +43,5 @@ ignore/
 package-lock.json
 /yarn-offline-cache
 .cache
+lib
+schema.ts

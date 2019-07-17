@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "bin": {
+    "graphql2ts": "./bin/cli"
+  },
   "dependencies": {
     "@babel/generator": "^7.5.0",
     "@babel/parser": "^7.5.0",
     "ast-types": "^0.12.2",
-    "graphql": "^14.4.2"
+    "graphql": "^14.4.2",
+    "yargs": "^13.3.0"
   },
   "devDependencies": {
     "@babel/cli": "7.5.0",
@@ -34,6 +38,10 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "start": "node babelx.js ./src/index.ts"
+    "start": "node babelx.js ./src/index.ts",
+    "build": "rm -rf lib/* && babel src --extensions \".es6,.js,.es,.jsx,.mjs,.ts,.tsx\" --ignore __test__,__testfixtures__,*.spec.ts --out-dir lib",
+    "prepublish": "npm run build",
+    "test": "jest",
+    "watch": "babel --extensions \".es6,.js,.es,.jsx,.mjs,.ts,.tsx\" -w -d ./lib ./src"
   }
 }
