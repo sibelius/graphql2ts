@@ -33,7 +33,7 @@ coverage
 graphql.*.json
 junit.xml
 
-.vs
+.vs*
 
 test/globalConfig.json
 distTs
