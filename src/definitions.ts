@@ -14,9 +14,9 @@ export const typedNode = (type: TypeNode): string => {
     case 'NamedType':
       return type.name.value;
     case 'ListType':
-      return `GraphQLList(${typedNode(type.type)})`;
+      return `new GraphQLList(${typedNode(type.type)})`;
     case 'NonNullType':
-      return `GraphQLNonNull(${typedNode(type.type)})`;
+      return `new GraphQLNonNull(${typedNode(type.type)})`;
     default:
       return '';
   }
