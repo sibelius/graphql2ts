@@ -1,9 +1,9 @@
-import path from "path";
-import fs from "fs";
+import path from 'path';
+import fs from 'fs';
 
 import { graphql2ts } from '../graphql2ts';
 
-const defineTest = (dirName: string, testFilePrefix: string, only: boolean = false) => {
+const defineTest = (dirName: string, testFilePrefix: string, only = false) => {
   const testName = `transforms correctly ${testFilePrefix}`;
 
   const myIt = only ? it.only : it;
